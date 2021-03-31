@@ -8,7 +8,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
-namespace SmtPortalProd.Models
+namespace PROJECT_NAME.Models
 {
     public enum DBType
     {
