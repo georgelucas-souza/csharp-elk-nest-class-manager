@@ -14,7 +14,8 @@ namespace PROJECT_NAME.Models
     {
         PROD,
         TEST,
-        LOCAL
+        LOCAL,
+        SEC
     }
 
     public static class Extensions
