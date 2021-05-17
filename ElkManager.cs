@@ -106,6 +106,9 @@ namespace PROJECT_NAME.Models
 
         private ElasticClient GetConnection(DBType dBType, string index, string user, string pwd)
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            
             var uris = dBType.GetUris();
             string certPath = dBType.GetCert();
 
@@ -120,13 +123,21 @@ namespace PROJECT_NAME.Models
                     X509Certificate cert = new X509Certificate(certPath);
                     settings.ServerCertificateValidationCallback(CertificateValidations.AuthorityIsRoot(cert));
                 }
-
+                else
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
+                }
+                
+                if((uris != null) && uris.Count() == 1)
+                {
+                    var pool = new SingleNodeConnectionPool(uris.First());
+                    var defaultIndex = index;
+                    settings = new ConnectionSettings(pool);
+                }
+                
                 settings.BasicAuthentication(user, pwd);
                 settings.DefaultIndex(index);
-
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
+                
                 ElasticClient elkClient = new ElasticClient(settings);
 
                 return elkClient;
