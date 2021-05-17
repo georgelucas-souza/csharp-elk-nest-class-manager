@@ -117,6 +117,7 @@ namespace PROJECT_NAME.Models
                 var connectionPool = new SniffingConnectionPool(uris);
 
                 var settings = new ConnectionSettings(connectionPool);
+                settings.RequestTimeout(TimeSpan.FromMinutes(10));
 
                 if (certPath != "NOT_NEEDED")
                 {
